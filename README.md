@@ -8,7 +8,7 @@
 
 > 使用说明
 
-1. 使用[命令](git clone https://github.com/zbs02355/Bayes_hadoop.git)下载代码
+1. 进入[该网站](https://github.com/zbs02355/Bayes_hadoop) 下载代码
 2. 新建java工程，导入hadoop2.2的相关jar包
 3. 在'WordCounter_Driver'类中的main()里对输入文件、输出文件进行修改，将路径换成自己的集群环境的地址
 4. 在eclipse中导出成jar包，上传到namenode节点中
