@@ -2,6 +2,8 @@ package bayes;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -24,7 +26,7 @@ public class WordCounter_Mapper extends Mapper<Object, Text, Text, IntWritable> 
 			a_word = tokenizer.nextToken();
 			//创建一个用于匹配中文的匹配器
 			Matcher matcher = pattern.matcher(a_word);
-			if(matcher.matches() == true){
+			if(matcher.matches() == true) {
 				if(wordLocation == 0) {
 					if(a_word.equals("好评")) {
 						class_flag = true;
