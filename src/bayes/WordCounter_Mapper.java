@@ -18,38 +18,43 @@ public class WordCounter_Mapper extends Mapper<Object, Text, Text, IntWritable> 
 		String line = value.toString();
 		//将每行结果按照默认分隔符进行拆分
 		StringTokenizer tokenizer = new StringTokenizer(line);
+		//创建正则表达式
+		Pattern pattern = Pattern.compile("[\\u4E00-\\u9FA5]{1,}");
 		while(tokenizer.hasMoreTokens()) {
 			a_word = tokenizer.nextToken();
-			if(wordLocation == 0) {
-				if(a_word.equals("好评")) {
-					class_flag = true;
-					//good_num += 1;
-					word.set(a_word);
-					context.write(word, one);
+			//创建一个用于匹配中文的匹配器
+			Matcher matcher = pattern.matcher(a_word);
+			if(matcher.matches() == true){
+				if(wordLocation == 0) {
+					if(a_word.equals("好评")) {
+						class_flag = true;
+						//good_num += 1;
+						word.set(a_word);
+						context.write(word, one);
+					}
+					else if(a_word.equals("差评")) {
+						class_flag = false;
+						//bad_num += 1;
+						word.set(a_word);
+						context.write(word, one);
+					}
+					wordLocation += 1;
 				}
-				else if(a_word.equals("差评")) {
-					class_flag = false;
-					//bad_num += 1;
-					word.set(a_word);
-					context.write(word, one);
+				else {
+					if (class_flag == true) {
+						a_word = "好评_" + a_word;
+						//word.set("good_" + a_word);
+						word.set(a_word);
+						context.write(word, one);
+					}
+					else if(class_flag == false) {
+						a_word = "差评_" + a_word;
+						//word.set("bad_" + a_word);
+						word.set(a_word);
+						context.write(word, one);
+					}
 				}
-				wordLocation += 1;
 			}
-			else {
-				if (class_flag == true) {
-					a_word = "好评_" + a_word;
-					//word.set("good_" + a_word);
-					word.set(a_word);
-					context.write(word, one);
-				}
-				else if(class_flag == false) {
-					a_word = "差评_" + a_word;
-					//word.set("bad_" + a_word);
-					word.set(a_word);
-					context.write(word, one);
-				}
-			}
-			
 		}
 		//每执行完一行之后，将个数置0
 		wordLocation = 0;
