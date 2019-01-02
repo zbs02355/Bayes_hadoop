@@ -137,6 +137,7 @@ public class WordCounter_Driver {
 				tempRate = Math.log(prior.get(label) / priorNorm);
 			}
 			for (String a_word : words) {
+				//集合V保证测试集中不会让非中文的单词去计算概率
 				if(!V.contains(a_word)) {
 					continue;
 				}
@@ -189,8 +190,8 @@ public class WordCounter_Driver {
 			line_num++;
 			
 		}
-		System.out.println("correct_num: " + correct_num);
-		System.out.println("incorrect_num: " + incorrect_num);
+		System.out.println("correct_num: " + (int)correct_num + "条");
+		System.out.println("incorrect_num: " + (int)incorrect_num + "条");
 		rate = correct_num / (correct_num + incorrect_num);
 		
 		String result = "模型正确率：" + decimal.format(rate);
