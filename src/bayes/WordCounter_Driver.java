@@ -16,11 +16,19 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class WordCounter_Driver {
+	//创建一个更改模型输出文件的类
+	public static class myOutputFormat_class extends org.apache.hadoop.mapreduce.lib.output.TextOutputFormat{
+		protected static void setOutputName(JobContext job, String name) {
+			job.getConfiguration().set(BASE_OUTPUT_NAME, name);
+		}
+	}
 	//使用MapReduce训练模型
 	public static void train_model(String trainFile, String modelFile) throws Exception{
 		if((new File(modelFile)).exists()) {
@@ -53,6 +61,9 @@ public class WordCounter_Driver {
 			job.setOutputKeyClass(Text.class);
 			//设置输出值类
 			job.setOutputValueClass(IntWritable.class);
+			//设置输出文件名
+			job.setOutputFormatClass(myOutputFormat_class.class);
+			myOutputFormat_class.setOutputName(job, "2016082065_模型");
 			
 			FileInputFormat.addInputPath(job, new Path("D:/hadoop_test/input"));
 			FileOutputFormat.setOutputPath(job, new Path("D:/hadoop_test/output_model"));
@@ -186,7 +197,7 @@ public class WordCounter_Driver {
 					incorrect_num++;
 				}
 			}
-			bufferedWriter.append(line_num + "\t预测标签：" + predictLabel + "\n");
+			bufferedWriter.append(line_num + "\t" + predictLabel + "\n");
 			line_num++;
 			
 		}
@@ -205,13 +216,13 @@ public class WordCounter_Driver {
 	//主函数
 	public static void main(String[] args) throws Exception {
 		String trainFile = "D:/hadoop_test/input"; // 这里指定hdfs下training data的scheme
-		String modelFilePath = "D:/hadoop_test/output_model/part-r-00000"; // 这里指定model文件将放置在本地的那个目录下，并给model文件命名
-		WordCounter_Driver.train_model(trainFile, modelFilePath);
+		String modelFilePath = "D:/hadoop_test/output_model/2016082065_模型-r-00000"; // 这里指定model文件将放置在本地的那个目录下，并给model文件命名
+		//WordCounter_Driver.train_model(trainFile, modelFilePath);
 		System.out.println("MapReduce执行完成！");
 		
 		if ((new File(modelFilePath)).exists()) {
 			String sentencesFilePath = "D:/hadoop_test/input_test/test-1000.txt"; // 这里指定sentences.txt文件的路径
-			String resultFilePath = "D:/hadoop_test/output_result/result.txt"; // 这里指定结果文件路径，结果文件的名称按照指定要求描述
+			String resultFilePath = "D:/hadoop_test/output_result/2016082065_预测结果.txt"; // 这里指定结果文件路径，结果文件的名称按照指定要求描述
 			WordCounter_Driver.validate(sentencesFilePath, modelFilePath, resultFilePath);
 			System.out.println("评估模型执行完成！");
 		}
