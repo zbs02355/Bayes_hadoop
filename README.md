@@ -15,6 +15,10 @@
 5. 在eclipse中导出成jar包，上传到namenode节点中
 6. 输入(hadoop jar jar包名称 类名.主函数名)命令运行
 
+>文件说明
+
+'''NB.java是为了符合老师的要求添加的，等同于WordCounter_Driver.java，运行任何一个都可以'''
+
 >注意事项
 
 该程序目前有一个bug，就是MapReduce和普通Java代码不能同时运行，也就是说在利用MapReduce生成模型文件后，后面的Java代码不能生成结果文件。暂时的解决办法：将' WordCounter_Driver.java '中的'208行'注释掉再运行，此时不要删除' output_model '文件夹的内容
